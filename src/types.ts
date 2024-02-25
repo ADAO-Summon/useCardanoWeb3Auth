@@ -1,0 +1,1 @@
+export type OAuthClients = { [key: string]: { name: string, clientId: string, verifier: string } }
