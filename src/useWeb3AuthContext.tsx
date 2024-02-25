@@ -11,7 +11,7 @@ const defaultWeb3AuthValue: Web3AuthResult = {
   walletAddress: '',
   loggedIn: false,
   userInfo: null,
-  seedPhrase: '',
+  getSeedPhrase: ()=>'',
   web3AuthAPI: null, // Assuming WalletApi can be null
 };
 

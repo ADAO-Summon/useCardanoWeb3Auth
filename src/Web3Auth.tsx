@@ -18,7 +18,7 @@ export interface Web3AuthResult {
 	loggedIn: boolean,
 	walletAddress: string;
 	userInfo: any;
-	seedPhrase: string;
+	getSeedPhrase: ()=>string;
 	web3AuthAPI: WalletApi | null,
 }
 
@@ -83,6 +83,7 @@ export function createWeb3Auth({oAuthClients, network, blockfrostUrl, blockfrost
 		setLoggedIn(true)
 	}
 
+
 	useEffect(() => {
 		if (typeof window != undefined) {
 			const coreKitInstance = new Web3AuthMPCCoreKit(
@@ -134,6 +135,9 @@ export function createWeb3Auth({oAuthClients, network, blockfrostUrl, blockfrost
 		}
 	}, [provider])
 
+	const getSeedPhrase = () => {
+		return seedPhrase
+	}
 
 	const login = async (platform: "discord" | "google" | "twitter" | "github") => {
 		console.log("logging in")
@@ -667,7 +671,7 @@ export function createWeb3Auth({oAuthClients, network, blockfrostUrl, blockfrost
 		walletAddress,
 		loggedIn,
 		userInfo,
-		seedPhrase,
+		getSeedPhrase,
 		web3AuthAPI
 	}
 }
