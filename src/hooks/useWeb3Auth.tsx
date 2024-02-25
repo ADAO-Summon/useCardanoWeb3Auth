@@ -1,9 +1,8 @@
 
 import Web3 from "web3";
 import { SafeEventEmitterProvider } from "@web3auth/base";
-//import { Web3AuthMPCCoreKit, WEB3AUTH_NETWORK, Point, SubVerifierDetailsParams, TssShareType, keyToMnemonic, getWebBrowserFactor, COREKIT_STATUS, TssSecurityQuestion, generateFactorKey, mnemonicToKey } from "@web3auth/mpc-core-kit";
-import pkg from '@web3auth/mpc-core-kit';
-const { Web3AuthMPCCoreKit, WEB3AUTH_NETWORK, Point, SubVerifierDetailsParams, TssShareType, keyToMnemonic, getWebBrowserFactor, COREKIT_STATUS, TssSecurityQuestion, generateFactorKey, mnemonicToKey } = pkg;
+import { Web3AuthMPCCoreKit, WEB3AUTH_NETWORK, Point, SubVerifierDetailsParams, TssShareType, keyToMnemonic, getWebBrowserFactor, COREKIT_STATUS, TssSecurityQuestion, generateFactorKey, mnemonicToKey } from "@web3auth/mpc-core-kit";
+
 //import type { provider } from "web3-core";
 import { TORUS_SAPPHIRE_NETWORK } from "@toruslabs/constants";
 
