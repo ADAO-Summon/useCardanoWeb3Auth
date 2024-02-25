@@ -20,7 +20,6 @@ export interface Web3AuthResult {
 	userInfo: any;
 	seedPhrase: string;
 	web3AuthAPI: WalletApi | null,
-	//signDataWithoutConfirmation: (address: string, payload: string) => Promise<{ signature: string; key: string }>;
 }
 
 const selectedNetwork = TORUS_SAPPHIRE_NETWORK.SAPPHIRE_DEVNET
@@ -68,20 +67,16 @@ export function createWeb3Auth({oAuthClients, network, blockfrostUrl, blockfrost
 		const stakeKeyHash = sKey.to_public().hash();
 
 		const networkId = network === "Mainnet" ? 1 : 0;
-		console.log({ networkId })
 		const address = C.BaseAddress.new(
 			networkId,
 			C.StakeCredential.from_keyhash(paymentKeyHash),
 			C.StakeCredential.from_keyhash(stakeKeyHash),
 		).to_address().to_bech32(undefined)
 
-		console.log({ address })
 		const stakeAddr = C.RewardAddress.new(
 			networkId,
 			C.StakeCredential.from_keyhash(stakeKeyHash),
 		).to_address().to_bech32(undefined)
-
-		//console.log({ address, stakeAddr })
 
 		setWalletAddress(address)
 		setRewardAddress(stakeAddr)
@@ -106,7 +101,6 @@ export function createWeb3Auth({oAuthClients, network, blockfrostUrl, blockfrost
 
 	useEffect(() => {
 		if (coreKitInstance) {
-			//console.log({coreKitInstance})
 			const init = async () => {
 				//console.log(await getDeviceShare())
 				await coreKitInstance.init();
@@ -114,7 +108,7 @@ export function createWeb3Auth({oAuthClients, network, blockfrostUrl, blockfrost
 					setProvider(coreKitInstance.provider);
 				}
 				if (coreKitInstance.status === "REQUIRED_SHARE" /* COREKIT_STATUS.REQUIRED_SHARE */) {
-					uiConsole("required more shares, please enter your backup/ device factor key, or reset account unrecoverable once reset, please use it with caution]");
+					console.error("required more shares, please enter your backup/ device factor key, or reset account unrecoverable once reset, please use it with caution]");
 				} else if (coreKitInstance.tKey?.privKey) {
 					const walletName = localStorage.getItem('summonWalletName')
 					/* if(!accessToken && walletName =='web3auth'){
@@ -140,15 +134,9 @@ export function createWeb3Auth({oAuthClients, network, blockfrostUrl, blockfrost
 		}
 	}, [provider])
 
-	const keyDetails = async () => {
-		if (!coreKitInstance) {
-			throw new Error('coreKitInstance not found');
-		}
-		uiConsole(coreKitInstance.getKeyDetails());
-	};
 
 	const login = async (platform: "discord" | "google" | "twitter" | "github") => {
-		console.log("loggin in")
+		console.log("logging in")
 		try {
 			// Triggering Login using Service Provider ==> opens the popup
 			if (!coreKitInstance) {
@@ -168,13 +156,9 @@ export function createWeb3Auth({oAuthClients, network, blockfrostUrl, blockfrost
 					verifierIdField: 'sub',
 					//scope: 'read:current_user openid profile email',
 				}
-				console.log({ verifierConfig })
 			}
-			console.log("here")
 			await coreKitInstance.loginWithOauth(verifierConfig);
-			console.log("status",coreKitInstance.status)
 			setCoreKitStatus(coreKitInstance.status);
-			console.log("there")
 		} catch (error: unknown) {
 			console.error(error);
 		}
@@ -183,7 +167,7 @@ export function createWeb3Auth({oAuthClients, network, blockfrostUrl, blockfrost
 	const getDeviceShare = async () => {
 		const factorKey = await getWebBrowserFactor(coreKitInstance!);
 		setBackupFactorKey(factorKey);
-		uiConsole("Device share: ", factorKey);
+		console.log("Device share: ", factorKey);
 	}
 
 	const getKeyHashes = (tx: C.Transaction, utxos: C.TransactionUnspentOutput[]) => {
@@ -421,7 +405,6 @@ export function createWeb3Auth({oAuthClients, network, blockfrostUrl, blockfrost
 			networkId,
 			C.StakeCredential.from_keyhash(stakeKeyHash),
 		).to_address().to_bech32(undefined)
-		console.log({ address, stakeAddr })
 		return { address, stakeAddress: stakeAddr }
 	}
 
@@ -662,7 +645,6 @@ export function createWeb3Auth({oAuthClients, network, blockfrostUrl, blockfrost
 
 	const getUserInfo = (): void => {
 		const user = coreKitInstance?.getUserInfo();
-		uiConsole(user);
 		return user
 	};
 
@@ -672,17 +654,10 @@ export function createWeb3Auth({oAuthClients, network, blockfrostUrl, blockfrost
 		}
 		setLoggedIn(false)
 		await coreKitInstance.logout();
-		uiConsole("Log out");
+		console.log("Logging out");
 		setProvider(null);
 	};
 
-	const uiConsole = (...args: any[]): void => {
-		const el = document.querySelector('#console>p');
-		if (el) {
-			el.innerHTML = JSON.stringify(args || {}, null, 2);
-		}
-		console.log(...args);
-	};
 
 	return {
 		login,
