@@ -8,7 +8,7 @@
 npm install use-cardano-web3auth
 ```
 
-#Usage
+# Usage
 1. Login to [Web3Auth](https://web3auth.io/):
 2. Visit [web3auth.io](https://web3auth.io/) and create a new project.
 3. Create verifiers for social login (e.g., Google, Twitter, GitHub).
