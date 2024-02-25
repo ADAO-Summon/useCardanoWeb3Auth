@@ -60,10 +60,10 @@ import { Web3AuthProvider } from 'use-cardano-web3-auth';
 import { useWeb3Auth } from 'use-cardano-web3-auth';
 
 const YourComponent = () => {
-    const { web3AuthAPI } = useWeb3Auth();
+    const { login: web3AuthLogin } = useWeb3Auth();
 
     const handleLogin = async () => {
-        await web3AuthAPI.login("google");
+        await web3AuthLogin("google");
     }
 
     return (
