@@ -26,6 +26,7 @@ export default {
     commonjs({
       // Explore options for handling named exports or compatibility
       // Example: namedExports: { '@web3auth/mpc-core-kit': ['COREKIT_STATUS'] }
+      namedExports: { '@web3auth/mpc-core-kit': ['COREKIT_STATUS', 'Web3AuthMPCCoreKit', 'keyToMnemonic', 'getWebBrowserFactor'] }
     }),
     typescript({
       noEmit: true,
