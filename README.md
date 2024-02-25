@@ -6,6 +6,7 @@
 
 ```bash
 npm install use-cardano-web3auth
+```
 
 #Usage
 1. Login to [Web3Auth](https://web3auth.io/):
@@ -13,7 +14,7 @@ npm install use-cardano-web3auth
 3. Create verifiers for social login (e.g., Google, Twitter, GitHub).
 4. Set OAuth Verifiers:
 
-```
+```typescript
 const oAuthClients: { [key: string]: { name: string, clientId: string, verifier: string } } = {
     google: {
       name: "google",
@@ -36,7 +37,7 @@ const oAuthClients: { [key: string]: { name: string, clientId: string, verifier:
 
 3. Wrap Components with Web3AuthProvider:
 
-```
+```typescript
 import { Web3AuthProvider } from 'use-cardano-web3-auth';
 
 <Web3AuthProvider
@@ -55,7 +56,7 @@ import { Web3AuthProvider } from 'use-cardano-web3-auth';
 
 # Example usage:
 ## Creating a Cardano Wallet with social login:
-```
+```typescript
 import { useWeb3Auth } from 'use-cardano-web3-auth';
 
 const YourComponent = () => {
@@ -73,7 +74,7 @@ const YourComponent = () => {
 ```
 
 ## Using the CIP-30 Wallet API:
-```
+```typescript
 import { useWeb3Auth } from 'use-cardano-web3-auth';
 
 const YourComponent = () => {
