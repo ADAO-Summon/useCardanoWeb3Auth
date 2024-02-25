@@ -8,8 +8,8 @@ import { TORUS_SAPPHIRE_NETWORK } from "@toruslabs/constants";
 
 import {  SignedMessage, M, Payload, PrivateKey, WalletApi, fromHex, toHex, C } from 'lucid-cardano';
 import  React, { useEffect, useState } from "react";
-import { mnemonicToEntropy } from "../bip39";
-import { OAuthClients } from "../types";
+import { mnemonicToEntropy } from "./utils/bip39";
+import { OAuthClients } from "./types";
 export interface Web3AuthResult {
 	login: (platform: "discord" | "google" | "twitter" | "github") => void;
 	getDeviceShare: () => Promise<any>;
@@ -25,8 +25,7 @@ export interface Web3AuthResult {
 
 const selectedNetwork = TORUS_SAPPHIRE_NETWORK.SAPPHIRE_DEVNET
 
-export function useWeb3Auth({oAuthClients, network, blockfrostUrl, blockfrostKey, redirectPathName, redirectUri, web3AuthClientId}:{oAuthClients:OAuthClients, network: "Mainnet" | "Preprod", blockfrostKey:string, blockfrostUrl:string, redirectPathName:string, redirectUri: string, web3AuthClientId:string }): Web3AuthResult {
-	console.log("react", React)
+export function createWeb3Auth({oAuthClients, network, blockfrostUrl, blockfrostKey, redirectPathName, redirectUri, web3AuthClientId}:{oAuthClients:OAuthClients, network: "Mainnet" | "Preprod", blockfrostKey:string, blockfrostUrl:string, redirectPathName:string, redirectUri: string, web3AuthClientId:string }): Web3AuthResult {
 	const [loggedIn, setLoggedIn] = React.useState(false);
 	const [userInfo, setUserInfo] = React.useState({});
 
