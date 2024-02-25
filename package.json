@@ -1,5 +1,5 @@
 {
-  "name": "usecardanoweb3auth",
+  "name": "use-cardano-web3-auth",
   "version": "1.0.0",
   "description": "A React hook for Cardano Web3 authentication.",
   "main": "dist/index.js",
@@ -9,8 +9,7 @@
     "node": "^16.15.0  || ^17.0.0 || ^18.0.0"
   },
   "exports": {
-    ".": "./dist/index.js",
-    "./cardano_message_signing_bg.wasm": "./dist/cardano_message_signing_bg.wasm"
+    ".": "./dist/index.js"
   },
   "type": "module",
   "scripts": {
