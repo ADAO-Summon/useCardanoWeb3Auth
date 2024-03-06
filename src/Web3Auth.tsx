@@ -24,7 +24,7 @@ export interface Web3AuthResult {
 
 const selectedNetwork = TORUS_SAPPHIRE_NETWORK.SAPPHIRE_DEVNET
 
-export function createWeb3Auth({oAuthClients, network, blockfrostUrl, blockfrostKey, redirectPathName, redirectUri, web3AuthClientId}:{oAuthClients:OAuthClients, network: "Mainnet" | "Preprod", blockfrostKey:string, blockfrostUrl:string, redirectPathName:string, redirectUri: string, web3AuthClientId:string }): Web3AuthResult {
+function CreateWeb3Auth({oAuthClients, network, blockfrostUrl, blockfrostKey, redirectPathName, redirectUri, web3AuthClientId}:{oAuthClients:OAuthClients, network: "Mainnet" | "Preprod", blockfrostKey:string, blockfrostUrl:string, redirectPathName:string, redirectUri: string, web3AuthClientId:string }): Web3AuthResult {
 	const [loggedIn, setLoggedIn] = React.useState(false);
 	const [userInfo, setUserInfo] = React.useState({});
 
@@ -675,3 +675,5 @@ export function createWeb3Auth({oAuthClients, network, blockfrostUrl, blockfrost
 		web3AuthAPI
 	}
 }
+
+export default CreateWeb3Auth;
