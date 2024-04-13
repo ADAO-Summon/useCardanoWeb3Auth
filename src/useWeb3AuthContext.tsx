@@ -54,13 +54,14 @@ export const Web3AuthProvider = ({
     }
   }, [typeof window]);
   const initializeWeb3Auth = useCallback(async () => {
-    console.log({ web3Auth }, web3Auth?.status);
     if (web3Auth) {
       if (web3Auth.status === "not_initialized") {
         await web3Auth.initialize();
       }
       if (web3Auth.status === "logged_in") {
         await web3Auth.initializeBlockchainAccounts();
+      }
+      if (web3Auth.status === "accounts_created") {
         await web3Auth.initializeWalletAPI();
       }
     }

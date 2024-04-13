@@ -265,6 +265,7 @@ export class Web3Auth {
     }
 
     async initializeWalletAPI(emulator?: Emulator) {
+        console.log("initializing wallet api")
         const privateData = Web3Auth.privates.get(this) as any;
 
         if (!privateData.cardanoPaymentKey || !privateData.cardanoStakeKey || !this.network) {
