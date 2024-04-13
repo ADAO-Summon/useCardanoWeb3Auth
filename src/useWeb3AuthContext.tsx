@@ -37,11 +37,20 @@ export const Web3AuthProvider = ({
 
   const web3Auth = useMemo(() => {
     if (typeof window !== 'undefined') {
-      const web3auth = Web3Auth.getInstance(
-        oAuthClients, network, blockfrostKey, blockfrostUrl,
-        redirectPathName, redirectUri, web3AuthClientId
-      )
-      return web3auth
+      try {
+        const web3auth = Web3Auth.getInstance(
+          oAuthClients,
+          network,
+          blockfrostKey,
+          blockfrostUrl,
+          redirectPathName,
+          redirectUri,
+          web3AuthClientId
+        );
+        return web3auth;
+      } catch (error) {
+        console.error('Error initializing Web3Auth:', error);
+      }
     }
   }, [typeof window]);
   const initializeWeb3Auth = useCallback(async() => {
