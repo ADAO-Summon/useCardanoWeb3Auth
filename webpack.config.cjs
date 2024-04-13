@@ -1,47 +1,55 @@
-  
 const webpack = require('webpack');
+const path = require('path');
 
-const config ={
-  mode: 'development',
-  plugins: [
-    new webpack.ProvidePlugin({
-      process: 'process/browser',
-      Buffer: ['buffer', 'Buffer'],
-    })
-  ],
+const config = {
+  mode: 'production',
+  entry: './src/index.ts',
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'index.js',
+    library: {
+      name: 'useCardanoWeb3Auth',
+      type: 'umd',
+    },
+    globalObject: 'this',
+  },
   resolve: {
-    extensions: ['.ts', '.js', '.tsx'], // Add .ts to the list of resolved extensions
+    extensions: ['.ts', '.js', '.tsx'],
     fallback: {
-      // Polyfills for Node.js globals and modules
       "crypto": require.resolve("crypto-browserify"),
-      "Buffer": require.resolve('buffer/'),
-      "process": require.resolve('process/browser'),
+      "buffer": require.resolve("buffer/"),
       "stream": require.resolve("stream-browserify"),
       "assert": require.resolve("assert"),
       "http": require.resolve("stream-http"),
       "https": require.resolve("https-browserify"),
       "os": require.resolve("os-browserify"),
       "url": require.resolve("url"),
-      "zlib": require.resolve('browserify-zlib'),
-      "fs": require.resolve('fs'),
-      // Add other necessary polyfills here
+      "zlib": require.resolve("browserify-zlib"),
     },
   },
-  target: "node",
-  output: {
-    publicPath: "/"
+  plugins: [
+    new webpack.ProvidePlugin({
+      process: 'process/browser',
+      Buffer: ['buffer', 'Buffer'],
+    }),
+  ],
+  externals: {
+    react: 'react',
+    'react-dom': 'react-dom',
+    '@web3auth/mpc-core-kit': '@web3auth/mpc-core-kit',
+    'lucid-cardano': 'lucid-cardano',
   },
   module: {
     rules: [
       {
-        test: /\.tsx?$/, // Regex to match both .ts and .tsx files
+        test: /\.tsx?$/,
         use: {
-          loader: "babel-loader",
+          loader: 'babel-loader',
           options: {
             presets: [
-              "@babel/preset-env",
-              "@babel/preset-react",
-              "@babel/preset-typescript",
+              '@babel/preset-env',
+              '@babel/preset-react',
+              '@babel/preset-typescript',
             ],
           },
         },
@@ -58,7 +66,6 @@ const config ={
           },
         ],
       },
-      // Add other loaders here as needed
     ],
   },
 };

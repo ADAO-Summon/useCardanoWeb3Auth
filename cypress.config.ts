@@ -1,6 +1,5 @@
   import { defineConfig } from "cypress";
   import webpackPreprocessor from "@cypress/webpack-preprocessor";
-  import webpackOptions from "./webpack.config.js"; // Adjust the path to your webpack.config.js
   import { NormalModuleReplacementPlugin } from "webpack";
   import path from "path";
 
