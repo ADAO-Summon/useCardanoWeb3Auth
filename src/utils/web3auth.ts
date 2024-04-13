@@ -267,6 +267,7 @@ export class Web3Auth {
     async initializeWalletAPI(emulator?: Emulator) {
         console.log("initializing wallet api", this.status)
         const privateData = Web3Auth.privates.get(this) as any;
+        console.log({ privateData })
 
         if (!privateData.cardanoPaymentKey || !privateData.cardanoStakeKey || !this.network) {
             throw new Error('Cardano keys not found. Please initialize blockchain accounts first by calling initiateBlockchainAccounts().')
