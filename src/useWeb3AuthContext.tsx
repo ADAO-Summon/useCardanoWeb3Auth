@@ -53,11 +53,15 @@ export const Web3AuthProvider = ({
       }
     }
   }, [typeof window]);
-  const initializeWeb3Auth = useCallback(async() => {
+  const initializeWeb3Auth = useCallback(async () => {
     if (web3Auth) {
-      await web3Auth.initialize();
-      await web3Auth.initializeBlockchainAccounts();
-      await web3Auth.initializeWalletAPI();
+      if (web3Auth.status === "not_initialized") {
+        await web3Auth.initialize();
+      }
+      if (web3Auth.status === "logged_in") {
+        await web3Auth.initializeBlockchainAccounts();
+        await web3Auth.initializeWalletAPI();
+      }
     }
   }, [web3Auth]);
 
