@@ -24,6 +24,34 @@ export interface Web3AuthResult {
 
 const selectedNetwork = TORUS_SAPPHIRE_NETWORK.SAPPHIRE_DEVNET
 
+export const getChainConfig = (network: "Mainnet" | "Preprod") => {
+    return network === "Mainnet" ?
+        {
+            chainNamespace: "eip155" as any,
+            chainId: "0x89", // hex of 137, polygon mainnet
+            rpcTarget: "https://rpc.ankr.com/polygon",
+            // Avoid using public rpcTarget in production.
+            // Use services like Infura, Quicknode etc
+            displayName: "Polygon Mainnet",
+            blockExplorer: "https://polygonscan.com",
+            ticker: "MATIC",
+            tickerName: "Matic",
+        }
+        :
+        {
+            chainNamespace: "eip155" as any,
+            chainId: "0x13881", // hex of 80001, polygon testnet
+            rpcTarget: "https://polygon-mumbai-pokt.nodies.app", //"https://rpc.ankr.com/polygon_mumbai",
+            // Avoid using public rpcTarget in production.
+            // Use services like Infura, Quicknode etc
+            displayName: "Polygon MATIC Testnet",
+            blockExplorer: "https://mumbai.polygonscan.com/",
+            ticker: "MATIC",
+            tickerName: "MATIC",
+            logo: "https://cryptologos.cc/logos/polygon-matic-logo.png",
+        };
+}
+
 function CreateWeb3Auth({oAuthClients, network, blockfrostUrl, blockfrostKey, redirectPathName, redirectUri, web3AuthClientId}:{oAuthClients:OAuthClients, network: "Mainnet" | "Preprod", blockfrostKey:string, blockfrostUrl:string, redirectPathName:string, redirectUri: string, web3AuthClientId:string }): Web3AuthResult {
 	const [loggedIn, setLoggedIn] = React.useState(false);
 	const [userInfo, setUserInfo] = React.useState({});
@@ -90,6 +118,7 @@ function CreateWeb3Auth({oAuthClients, network, blockfrostUrl, blockfrostKey, re
 				{
 					web3AuthClientId: web3AuthClientId,//'BB7UzU7QOBv0XWHoqcMv6PrvEAJOgfsOSGt2ub6ho0HlrjMtFA9uDEcxoTykoA2C768SGZZllwfmdBEttCUg57Y',
 					web3AuthNetwork: selectedNetwork,
+					chainConfig: getChainConfig(network),
 					uxMode: 'redirect',
 					baseUrl: redirectUri,//typeof window !== 'undefined' ? `${window.location.origin}` : 'http://localhost:8084',
 					redirectPathName: redirectPathName//'web3auth/login',
