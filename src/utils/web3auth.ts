@@ -65,6 +65,8 @@ export class Web3Auth {
     isAccountsCreated: boolean;
     solanaConnection: solanaWeb3.Connection;
     status: 'not_initialized' | 'initializing' | 'initialized' | 'logged_in' | 'accounts_created' | 'api_created' | 'full_login'
+    moralisKey?: string | null
+
    // private seedPhrase: string | null;
     private static instance: Web3Auth | null = null;
     // Declare a map to hold private properties
@@ -74,7 +76,7 @@ export class Web3Auth {
         cardanoStakeKey: C.PrivateKey | null,
         solanaKeyPair: solanaWeb3.Keypair | null,
         ethProvider: EthereumPrivateKeyProvider | null,
-        web3AuthClientId: string
+        web3AuthClientId: string,
     }>();
     private constructor(
         oAuthClients: OAuthClients,
@@ -108,6 +110,7 @@ export class Web3Auth {
         this.backupFactorKey = null;
         this.isAccountsCreated = false;
         this.status = "not_initialized"
+        this.moralisKey = null
         this.coreKitInstance = new Web3AuthMPCCoreKit(
             {
                 web3AuthClientId: web3AuthClientId,
@@ -233,7 +236,7 @@ export class Web3Auth {
             // create wallet from mnemonic
             const mnemonic = keyToMnemonic(this.coreKitInstance.tKey.privKey.toString('hex'))
             const { address, stakeAddr, paymentKey, stakeKey } = await createWalletFromMnemonic(mnemonic, this.network)
-            const solanaKeyPair = solanaWeb3.Keypair.fromSeed(this.coreKitInstance.tKey.privKey.toString('hex'));
+            const solanaKeyPair = solanaWeb3.Keypair.fromSeed(this.coreKitInstance.tKey.privKey.toString('hex') as any);
             const privateData = Web3Auth.privates.get(this) as any;
             this.cardanoAddress = address;
             privateData.cardanoPaymentKey = paymentKey;
@@ -294,7 +297,7 @@ export class Web3Auth {
 
     async getBlockchainBalances() {
         const privateData = Web3Auth.privates.get(this) as any;
-        return await getBlockchainBalances(this.coreKitInstance, privateData.ethProvider, this.cardanoAddress, privateData.solanaKeyPair)
+        return await getBlockchainBalances(this.coreKitInstance, privateData.ethProvider, this.cardanoAddress, privateData.solanaKeyPair, this.blockfrostUrl, this.blockfrostKey, this.moralisKey)
     }
 
     //--
@@ -436,7 +439,7 @@ export const getBlockchainAccounts = async (coreKitInstance: any, ethProvider?: 
     } as AccountAddresses
 }
 
-export const getBlockchainBalances = async (coreKitInstance: any, ethProvider?: SafeEventEmitterProvider | null, cardanoAddress?: string, solanaKeyPair?: any) => {
+export const getBlockchainBalances = async (coreKitInstance: any, ethProvider: SafeEventEmitterProvider | null, cardanoAddress: string, solanaKeyPair: any, blockfrostUrl: string, blockfrostKey: string, moralisKey?: string | null) => {
     const solanaConnection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl('devnet'), 'confirmed');
 
     if (!coreKitInstance) {
@@ -454,12 +457,14 @@ export const getBlockchainBalances = async (coreKitInstance: any, ethProvider?: 
         "ether"
     );
     let solanaBalance = await solanaConnection.getBalance(solanaKeyPair!.publicKey);
-    const cardanoAddressInfo = await getCardanoAddressInfo(cardanoAddress!);
+    const cardanoAddressInfo = await getCardanoAddressInfo(cardanoAddress!, blockfrostUrl, blockfrostKey);
     // const cardanoBalance = BigInt(cardanoAddressInfo.amount.filter((asset: any) => asset.unit === 'lovelace')[0].quantity)// / 1000000
-    const cardanoAssets = await getCardanoAssetsByAddress(cardanoAddress!);
+    const cardanoAssets = await getCardanoAssetsByAddress(cardanoAddress!, blockfrostUrl, blockfrostKey);
     console.log({ cardanoAssets })
-    const evmNFTs = await getEVMAddressNFTs(address, 'polygon');
-    console.log({ evmNFTs })
+
+    if(moralisKey){
+        const evmNFTs = await getEVMAddressNFTs(address, 'polygon', moralisKey);
+    }
     // balances are returned in ether, sol and ada (not in lovelace, lamports or wei)
     let balance: AccountBalances = newEmptyBalance()
     balance = {

@@ -15,12 +15,12 @@ export const tokenNameFromAssetName = (assetName: string) => assetName == 'lovel
     //Buffer.from(assetName, "hex").toString("ascii")
 })()
 
-export const getCardanoAddressInfo = async (address: string): Promise<CardanoAddressInfo>=> {
+export const getCardanoAddressInfo = async (address: string, blockfrostUrl:string, blockfrostKey: string): Promise<CardanoAddressInfo>=> {
     const result = await fetch(
-        `${process.env.BLOCKFROST_URL}/addresses/${address}`,
+        `${blockfrostUrl}/addresses/${address}`,
         {
             headers: {
-                project_id: process.env.BLOCKFROST_PROJECT_ID as string,
+                project_id: blockfrostKey,
                 "Content-Type": "application/json",
             },
         },
@@ -63,7 +63,7 @@ const lucidUTXoToBlockfrostUTXO = (utxo: UTxO): BlockfrostUTXO => {
     }
 }
 
-export const getCardanoAddressUtxos = async (address: string, emulator?: Emulator) => {
+export const getCardanoAddressUtxos = async (address: string, blockfrostUrl: string, blockfrostKey:string, emulator?: Emulator) => {
     let result: BlockfrostUTXO[] = [];
     if (emulator) {
         const utxos: BlockfrostUTXO[] = (await emulator.getUtxos(address)).map((utxo: UTxO) => {
@@ -76,10 +76,10 @@ export const getCardanoAddressUtxos = async (address: string, emulator?: Emulato
     const limit = ''//paginate && paginate.limit ? `&count=${paginate.limit}` : '';
     while (true) {
         let pageResult = await fetch(
-            `${process.env.BLOCKFROST_URL}/addresses/${address}/utxos?page=${page}${limit}`,
+            `${blockfrostUrl}/addresses/${address}/utxos?page=${page}${limit}`,
             {
                 headers: {
-                    project_id: process.env.BLOCKFROST_PROJECT_ID as string,
+                    project_id: blockfrostKey,
                     "Content-Type": "application/json",
                 },
             },
@@ -126,20 +126,13 @@ export const getUTxOAmountPerTokenRange = async (utxos: BlockfrostUTXO[], breakp
     return result
 }
 
-export const getUTxOStatsForAddress = async (address: string, breakpoints: number[]) => {
-    const utxos = await getCardanoAddressUtxos(address)
-    const minAdaStats = await calculateMinAdaFromUTXOs(utxos)
-    const tokensPerUTxO = await getUTxOAmountPerTokenRange(utxos, breakpoints)
-    return { tokensPerUTxO, minAdaStats }
-}
 
-
-export const getProtocolParams = async () => {
+export const getProtocolParams = async (blockfrostUrl: string, blockfrostKey: string) => {
     const result = await fetch(
-        `${process.env.BLOCKFROST_URL}/epochs/latest/parameters`,
+        `${blockfrostUrl}/epochs/latest/parameters`,
         {
             headers: {
-                project_id: process.env.BLOCKFROST_PROJECT_ID as string,
+                project_id: blockfrostKey,
                 "Content-Type": "application/json",
             },
         },
@@ -153,22 +146,6 @@ export const getProtocolParams = async () => {
     return result
 }
 
-export const calculateMinAdaFromUTXOs = async (utxos: BlockfrostUTXO[]) => {
-    const protocolParams = await getProtocolParams()
-    console.log({ protocolParams })
-    let totalMinLovelaces = 0
-    const utxosMinAda = []
-    for (let utxo of utxos) {
-        let utxoMinLovelaces = 0// Number(protocolParams.min_utxo_value)
-        const utxoEntrySizeWithoutVal = 27
-        const size = calculateUTxOSize(utxo)
-        const utxoEntrySize = utxoEntrySizeWithoutVal + size
-        utxoMinLovelaces += utxoEntrySize * Number(protocolParams.coins_per_utxo_size)
-        totalMinLovelaces += utxoMinLovelaces
-        utxosMinAda.push({ [utxo.tx_hash + "-" + utxo.output_index]: utxoMinLovelaces })
-    }
-    return { totalMinLovelaces, utxosMinAda }
-}
 
 const roundupBytesToWords = (bytes: number) => {
     return Math.ceil((bytes + 7) / 8)
@@ -242,27 +219,14 @@ const linkToSrc = (link: string, base64 = false) => {
     return null;
 };
 
-export const getCardanoAssetsByAddress = async (address: string, options?: { ignoreDetails?: boolean, page?: number, pageLength?: number }) => {
+export const getCardanoAssetsByAddress = async (address: string, blockfrostUrl: string, blockfrostKey: string, options?: { ignoreDetails?: boolean, page?: number, pageLength?: number }) => {
     const allNFTs: any = []
     const ignoreDetails = options && options.ignoreDetails ? options.ignoreDetails : false
     const page = options && options.page ? options.page : 1
     const pageLength = options && options.pageLength ? options.pageLength : 30
     var addressInfo: TokenBalance = { NFTs: [], FTs: [] }
 
-    const data = await getCardanoAddressInfo(address)
-    /*  await fetch(
-        `${process.env.BLOCKFROST_URL}/addresses/${address}`,
-        {
-            headers: {
-                project_id: process.env.BLOCKFROST_PROJECT_ID as string,
-                'Content-Type': 'application/json'
-            }
-        }
-    ).then(res => res.json()).catch(e => {
-        console.log("error")
-    }); */
-
-
+    const data = await getCardanoAddressInfo(address, blockfrostUrl, blockfrostKey)
     if (data && data.amount && data.amount.length > 0) {
         console.log({ data })
         const fungible: TokenInfo[] = [];
@@ -271,9 +235,9 @@ export const getCardanoAssetsByAddress = async (address: string, options?: { ign
         const batchSize = 5; // Adjust the batch size according to the rate limit
         const slicedData = options && options.page ? data.amount.slice((page - 1) * (pageLength || 30), page * (pageLength || 30)) : data.amount
         const assetDetailsPromises = slicedData?.filter((asset: any) => asset.unit !== 'lovelace' && !ignoreDetails)
-            .map((asset: any) => () => fetch(`${process.env.BLOCKFROST_URL}/assets/${asset.unit}`, {
+            .map((asset: any) => () => fetch(`${blockfrostUrl}/assets/${asset.unit}`, {
                 headers: {
-                    project_id: process.env.BLOCKFROST_PROJECT_ID as string,
+                    project_id: blockfrostKey,
                     'Content-Type': 'application/json'
                 }
             }).then(res => res.json()).catch(e => console.log("error fetching asset", e)));

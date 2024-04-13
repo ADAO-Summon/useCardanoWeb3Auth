@@ -1,9 +1,16 @@
   
 const webpack = require('webpack');
+const dotenv = require('dotenv');
+
+// Load environment variables
+const env = dotenv.config().parsed;
 
 const config ={
   mode: 'development',
   plugins: [
+    new webpack.DefinePlugin({
+      'process.env': JSON.stringify(env),
+    }),
     new webpack.ProvidePlugin({
       process: 'process/browser.js',
       Buffer: ['buffer', 'Buffer'],

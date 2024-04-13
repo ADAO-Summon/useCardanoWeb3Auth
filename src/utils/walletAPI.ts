@@ -366,7 +366,7 @@ export class Web3AuthWalletAPI {
         const { address, stakeAddress } = getAddressesFromKeys(this.paymentKey, this.stakeKey, this.network)
         const addressHex = Buffer.from(C.Address.from_bech32(address).to_bytes()).toString('hex')
 
-        const result = await getCardanoAddressUtxos(address, this.emulator)
+        const result = await getCardanoAddressUtxos(address, this.blockfrostUrl, this.blockfrostKey, this.emulator)
 
         const converted = await Promise.all(
             result.map(async (utxo: any) => {
@@ -380,7 +380,7 @@ export class Web3AuthWalletAPI {
 
     async getBalance(): Promise<string> {
         const { address, stakeAddress } = getAddressesFromKeys(this.paymentKey, this.stakeKey, this.network)
-        const result = await getCardanoAddressInfo(address)
+        const result = await getCardanoAddressInfo(address, this.blockfrostUrl, this.blockfrostKey)
         const value = await assetsToValue(result.amount);
         return Buffer.from(value.to_bytes()).toString('hex')
     }

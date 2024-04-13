@@ -1,9 +1,9 @@
 import Moralis from "moralis";
 import { EvmChain } from "@moralisweb3/common-evm-utils";
 
-export const getEVMAddressNFTs = async (address: string, chain: string) => {
+export const getEVMAddressNFTs = async (address: string, chain: string, moralisKey: string) => {
     await Moralis.start({
-      apiKey: process.env.MORALIS_API_KEY,
+      apiKey: moralisKey,
       // ...and any other configuration
     });
   
