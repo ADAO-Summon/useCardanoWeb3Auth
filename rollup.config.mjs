@@ -30,7 +30,7 @@ export default {
     }),
     typescript({
       noEmit: true,
-      exclude: ["node_modules/**", "dist/**"],
+      exclude: ["node_modules/**", "dist/**", "cypress/**"],
     }),
   ],
   external: ["react", "react-dom", "@web3auth/mpc-core-kit"], // Add the peer dependency as external
