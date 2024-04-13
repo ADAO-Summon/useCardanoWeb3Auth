@@ -1,5 +1,5 @@
 
-import Web3AuthProvider, { useWeb3Auth } from './useWeb3AuthContext';
+import  { Web3AuthProvider, useWeb3Auth } from './useWeb3AuthContext';
 
 export {
   useWeb3Auth,

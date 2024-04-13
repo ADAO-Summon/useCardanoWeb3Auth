@@ -1,35 +1,67 @@
-import { createContext, useContext } from 'react';
-//import Web3AuthConfirmationDialog from 'src/components/Web3AuthConfirmationDialog';
-import CreateWeb3Auth, { Web3AuthResult } from './Web3Auth';
-import { OAuthClients } from './types';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { Web3Auth } from './utils/web3auth';
+import { OAuthClients } from './types/web3auth';
 
-const defaultWeb3AuthValue: Web3AuthResult = {
-  login: () => { },
-  getDeviceShare: async () => { },
-  logout: () => { },
-  getUserInfo: () => { },
-  walletAddress: '',
-  loggedIn: false,
-  userInfo: null,
-  getSeedPhrase: ()=>'',
-  web3AuthAPI: null, // Assuming WalletApi can be null
-};
+// Adjust the context to optionally include a loading state or functions
+
+
+const defaultWeb3AuthValue: Web3Auth | undefined = undefined;
 
 // Create a context
-const Web3AuthContext = createContext(defaultWeb3AuthValue);
+const Web3AuthContext = createContext<Web3Auth | undefined>(defaultWeb3AuthValue);
 
-// Export the provider as a component
-function Web3AuthProvider({ children, oAuthClients, network, blockfrostKey, blockfrostUrl, redirectPathName, redirectUri, web3AuthClientId }: { children: any, oAuthClients: OAuthClients, network: "Mainnet" | "Preprod", blockfrostKey: string, blockfrostUrl:string, redirectPathName:string, redirectUri: string, web3AuthClientId:string }) {
-  const web3Auth = CreateWeb3Auth({oAuthClients, network, blockfrostKey, blockfrostUrl, redirectPathName, redirectUri, web3AuthClientId});
+export const Web3AuthProvider = ({
+  children,
+  oAuthClients,
+  network,
+  blockfrostKey,
+  blockfrostUrl,
+  redirectPathName,
+  redirectUri,
+  web3AuthClientId,
+}: {
+  children: React.ReactNode;
+  oAuthClients: OAuthClients;
+  network: "Mainnet" | "Preprod";
+  blockfrostKey: string;
+  blockfrostUrl: string;
+  redirectPathName: string;
+  redirectUri: string;
+  web3AuthClientId: string;
+}) => {
+  //const auth = new Web3Auth(oAuthClients, network, blockfrostKey, blockfrostUrl, redirectPathName, redirectUri, web3AuthClientId);
+
+  const web3Auth = useMemo(() => {
+    if (typeof window !== 'undefined') {
+      const web3auth = Web3Auth.getInstance(
+        oAuthClients, network, blockfrostKey, blockfrostUrl,
+        redirectPathName, redirectUri, web3AuthClientId
+      )
+      return web3auth
+    }
+  }, [typeof window]);
+  const initializeWeb3Auth = useCallback(async() => {
+    if (web3Auth) {
+      await web3Auth.initialize();
+      await web3Auth.initializeBlockchainAccounts();
+      await web3Auth.initializeWalletAPI();
+    }
+  }, [web3Auth]);
+
+  useEffect(() => {
+    if (web3Auth && web3Auth.status === "not_initialized") {
+      initializeWeb3Auth().then(() => {
+        console.log({ web3Auth });
+      });
+    }
+  }, [web3Auth]);
 
   return (
-    <Web3AuthContext.Provider value={web3Auth as Web3AuthResult}>
+    <Web3AuthContext.Provider value={web3Auth }>
       {children}
     </Web3AuthContext.Provider>
   );
 };
 
 // Custom hook for easy access to the context
-export function useWeb3Auth(){ return useContext(Web3AuthContext)}
-
-export default Web3AuthProvider;
+export const useWeb3Auth = () => useContext(Web3AuthContext);
