@@ -5,10 +5,10 @@ import { OAuthClients } from './types/web3auth';
 // Adjust the context to optionally include a loading state or functions
 
 
-const defaultWeb3AuthValue: Web3Auth | undefined = undefined;
+const defaultWeb3AuthValue: Web3Auth | null = null;
 
 // Create a context
-const Web3AuthContext = createContext<Web3Auth | undefined>(defaultWeb3AuthValue);
+const Web3AuthContext = createContext<Web3Auth | null>(defaultWeb3AuthValue);
 
 export const Web3AuthProvider = ({
   children,
