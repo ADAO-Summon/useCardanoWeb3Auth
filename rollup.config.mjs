@@ -29,6 +29,8 @@ export default {
       namedExports: { '@web3auth/mpc-core-kit': ['COREKIT_STATUS', 'Web3AuthMPCCoreKit', 'keyToMnemonic', 'getWebBrowserFactor'] }
     }),
     typescript({
+      declaration: true,
+      declarationDir: "dist",
       noEmit: true,
       exclude: ["node_modules/**", "dist/**", "cypress/**"],
     }),

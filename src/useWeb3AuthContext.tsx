@@ -39,6 +39,7 @@ export const Web3AuthProvider = ({
       )
       return web3auth
     }
+    return null
   }, [typeof window]);
   const initializeWeb3Auth = useCallback(async() => {
     if (web3Auth) {
