@@ -54,6 +54,8 @@ export const Web3AuthProvider = ({
     }
   }, [typeof window]);
   const initializeWeb3Auth = useCallback(async () => {
+    console.log("statuss", web3Auth?.status)
+
     if (web3Auth) {
       if (web3Auth.status === "not_initialized") {
         await web3Auth.initialize();
