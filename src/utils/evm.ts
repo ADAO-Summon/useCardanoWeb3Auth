@@ -22,7 +22,6 @@ export const getEVMAddressNFTs = async (address: string, chain: string, moralisK
       allNFTs.push(response.toJSON());
     }
     
-    console.log({allNFTs});
     return allNFTs;
   };
 

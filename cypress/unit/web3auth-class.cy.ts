@@ -55,7 +55,6 @@ describe("instantiates web3auth class", () => {
             //  sub = jwt.decode(mockJWT)?.sub as string;
             cy.wrap(web3auth!.login("jwt", data.jwt)).then((res: any) => {
                 cy.log("status", web3auth!.coreKitInstance.status);
-                console.log(web3auth!.coreKitInstance.tKey);
                 expect(web3auth!.coreKitInstance.status).to.equal("LOGGED_IN");
                 expect(web3auth!.coreKitInstance).to.have.property("tKey");
                 expect(web3auth!.coreKitInstance.tKey.privKey).to.not.be.null;
@@ -88,7 +87,6 @@ describe("instantiates web3auth class", () => {
 });
 
 describe("does the full login at once", () => {
-    console.log(process.env.WEB3AUTH_CLIENT_ID as string, "web3auth")
     it("instantiates web3auth", () => {
         cy.wrap(Web3Auth.getInstance(oAuthClients, cardanoNetwork, process.env.BLOCKFROST_PROJECT_ID as string, process.env.BLOCKFROST_URL as string, "home", window.location.origin, process.env.WEB3AUTH_CLIENT_ID as string)).then((wa: any) => {
             web3auth = wa;
@@ -116,7 +114,6 @@ describe("does the full login at once", () => {
                 expect(web3auth!.cardanoAddress).to.have.lengthOf(108);
                 expect(web3auth!.cardanoWalletAPI).to.not.be.null;
                 cy.wrap(web3auth!.cardanoWalletAPI!.getUnusedAddresses()).then((addresses: any) => {
-                    console.log({ addresses })
                     expect(addresses).to.have.lengthOf(1);
                 })
             });

@@ -6,7 +6,6 @@ import { Emulator, UTxO, WalletApi, fromLabel } from "lucid-cardano"
 export const tokenNameFromUnit = (unit: string) => unit === 'lovelace' ? 'ADA' : tokenNameFromAssetName(unit.replace(unit.slice(0, 56), ""))//Buffer.from(unit.replace(unit.slice(0, 56), ""), "hex").toString("ascii")
 export const tokenNameFromAssetName = (assetName: string) => assetName == 'lovelace' ? 'ADA ' : (() => {
     const label = fromLabel(assetName.slice(0, 8));
-    console.log({ label }, assetName.slice(0, 8))
     const name = (() => {
         const hexName = Number.isInteger(label) ? Buffer.from(assetName.slice(8), "hex").toString("ascii") : Buffer.from(assetName, "hex").toString("ascii");
         return hexName || null;
@@ -69,7 +68,6 @@ export const getCardanoAddressUtxos = async (address: string, blockfrostUrl: str
         const utxos: BlockfrostUTXO[] = (await emulator.getUtxos(address)).map((utxo: UTxO) => {
             return lucidUTXoToBlockfrostUTXO(utxo)
         })
-        console.log({ utxos })
         return utxos
     }
     let page = 1// paginate && paginate.page ? paginate.page + 1 : 1;
@@ -254,8 +252,6 @@ export const getCardanoAssetsByAddress = async (address: string, blockfrostUrl: 
                         asset.onchain_metadata?.[`0x${policyId}`]?.[`0x${name}`]) ||
                         asset.onchain_metadata);
                 const meta = asset.onchain_metadata;
-                console.log({ asset })
-                console.log({ meta })
                 console.log({ metadata: asset.metadata })
 
                 const isNFT = Number(asset.quantity) == 1 && (hasNFTOnchainMetadata && !label) || label === 222;
@@ -295,6 +291,5 @@ export const getCardanoAssetsByAddress = async (address: string, blockfrostUrl: 
     }
     /* const count = data.amount? data.amount.length : 0
     addressInfo.count = count */
-    console.log({ addressInfo });
     return addressInfo;
 }

@@ -157,14 +157,12 @@ export class Web3Auth {
         return Web3Auth.instance;
     }
     async initialize() {
-        console.log("initializing", this.status)
         if (this.status !== "not_initialized") {
             return this
         } else {
             this.status = "initializing"
         }
         await this.coreKitInstance.init();
-        console.log("Status", this.coreKitInstance.status)
         if (this.coreKitInstance.status === "LOGGED_IN") {
             this.status = "logged_in"
         } else {
@@ -174,7 +172,6 @@ export class Web3Auth {
     }
 
     async login(platform: "discord" | "google" | "twitter" | "github" | "jwt", jwtToken?: string) {
-        console.log("logging in")
         if (platform === "jwt" && jwtToken) {
             const sub = jwt.decode(jwtToken)?.sub;
             if (!sub) throw new Error('sub not found in jwt')
@@ -265,10 +262,7 @@ export class Web3Auth {
     }
 
     async initializeWalletAPI(emulator?: Emulator) {
-        console.log("initializing wallet api", this.status)
         const privateData = Web3Auth.privates.get(this) as any;
-        console.log({ privateData })
-
         if (!privateData.cardanoPaymentKey || !privateData.cardanoStakeKey || !this.network) {
             throw new Error('Cardano keys not found. Please initialize blockchain accounts first by calling initiateBlockchainAccounts().')
         }
@@ -427,7 +421,6 @@ export const getBlockchainAccounts = async (coreKitInstance: any, ethProvider?: 
 
     // Get user's Ethereum public address
     const address = await web3.eth.getAccounts();
-    console.log(address);
 
     /* let balance = await solanaConnection.getBalance(solanaKeyPair!.publicKey);
     console.log(`${balance / solanaWeb3.LAMPORTS_PER_SOL} SOL`); */
@@ -462,7 +455,6 @@ export const getBlockchainBalances = async (coreKitInstance: any, ethProvider: S
     const cardanoAddressInfo = await getCardanoAddressInfo(cardanoAddress!, blockfrostUrl, blockfrostKey);
     // const cardanoBalance = BigInt(cardanoAddressInfo.amount.filter((asset: any) => asset.unit === 'lovelace')[0].quantity)// / 1000000
     const cardanoAssets = await getCardanoAssetsByAddress(cardanoAddress!, blockfrostUrl, blockfrostKey);
-    console.log({ cardanoAssets })
 
     if(moralisKey){
         const evmNFTs = await getEVMAddressNFTs(address, 'polygon', moralisKey);
