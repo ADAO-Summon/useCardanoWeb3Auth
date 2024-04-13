@@ -5,7 +5,7 @@ const config ={
   mode: 'development',
   plugins: [
     new webpack.ProvidePlugin({
-      process: 'process/browser',
+      process: 'process/browser.js',
       Buffer: ['buffer', 'Buffer'],
     })
   ],
@@ -15,7 +15,7 @@ const config ={
       // Polyfills for Node.js globals and modules
       "crypto": require.resolve("crypto-browserify"),
       "Buffer": require.resolve('buffer/'),
-      "process": require.resolve('process/browser'),
+      "process": require.resolve('process/browser.js'),
       "stream": require.resolve("stream-browserify"),
       "assert": require.resolve("assert"),
       "http": require.resolve("stream-http"),
@@ -27,7 +27,7 @@ const config ={
       // Add other necessary polyfills here
     },
   },
-  target: "node",
+  target: "web",
   output: {
     publicPath: "/"
   },
