@@ -3,12 +3,15 @@ import { Web3Auth } from './utils/web3auth';
 import { OAuthClients } from './types/web3auth';
 
 // Adjust the context to optionally include a loading state or functions
+interface Web3AuthContextType {
+  web3Auth: Web3Auth | undefined;
+  isLoading: boolean; // Add a loading state
+}
 
-
-const defaultWeb3AuthValue: Web3Auth | null = null;
+const defaultWeb3AuthValue: Web3AuthContextType = { web3Auth: undefined, isLoading: true };
 
 // Create a context
-const Web3AuthContext = createContext<Web3Auth | null>(defaultWeb3AuthValue);
+const Web3AuthContext = createContext<Web3AuthContextType>(defaultWeb3AuthValue);
 
 export const Web3AuthProvider = ({
   children,
@@ -29,6 +32,7 @@ export const Web3AuthProvider = ({
   redirectUri: string;
   web3AuthClientId: string;
 }) => {
+  const [isLoading, setIsLoading] = useState(true); // Track the loading state
   //const auth = new Web3Auth(oAuthClients, network, blockfrostKey, blockfrostUrl, redirectPathName, redirectUri, web3AuthClientId);
 
   const web3Auth = useMemo(() => {
@@ -39,7 +43,6 @@ export const Web3AuthProvider = ({
       )
       return web3auth
     }
-    return null
   }, [typeof window]);
   const initializeWeb3Auth = useCallback(async() => {
     if (web3Auth) {
@@ -53,12 +56,13 @@ export const Web3AuthProvider = ({
     if (web3Auth && web3Auth.status === "not_initialized") {
       initializeWeb3Auth().then(() => {
         console.log({ web3Auth });
+        setIsLoading(false);
       });
     }
   }, [web3Auth]);
 
   return (
-    <Web3AuthContext.Provider value={web3Auth }>
+    <Web3AuthContext.Provider value={{ web3Auth, isLoading }}>
       {children}
     </Web3AuthContext.Provider>
   );
