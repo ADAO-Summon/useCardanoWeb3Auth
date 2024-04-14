@@ -27,7 +27,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "tailwindcss-animate": "^1.0.6",
-    "use-cardano-web3-auth": "git+https://github.com/rodrigomd94/useCardanoWeb3Auth.git#refactoring",
+    "use-cardano-web3-auth": "git+https://github.com/ADAO-Summon/useCardanoWeb3Auth.git",
     "vite-plugin-top-level-await": "^1.4.1",
     "vite-plugin-wasm": "^3.3.0"
   },
