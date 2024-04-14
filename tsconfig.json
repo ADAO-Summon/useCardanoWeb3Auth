@@ -11,6 +11,7 @@
     "moduleResolution": "node", /* Specify how TypeScript looks up a file from a given module specifier. */
     "resolveJsonModule": true,
     "isolatedModules": false,
+    "types":["cypress"],
     /* Emit */
     "declaration": true, /* Generate .d.ts files from TypeScript and JavaScript files in your project. */
     "outDir": "./dist", /* Specify an output folder for all emitted files. */
