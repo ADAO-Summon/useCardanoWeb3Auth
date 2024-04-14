@@ -14,9 +14,11 @@ Run
 ## Configure environment
 
 Create a .env file with the following variables:
+```bash
 VITE_BLOCKFROST_URL="https://cardano-mainnet.blockfrost.io/api/v0" // OR testnet url
 VITE_BLOCKFROST_PROJECT_ID=<YOUR_BLOCKFROS_KEY>
 VITE_NETWORK="Mainnet" // OR Testnet
+```
 
 
 ## 📜 Available Scripts
