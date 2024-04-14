@@ -45,6 +45,7 @@ export const getChainConfig = (network: "Mainnet" | "Preprod") => {
         };
 }
 
+type Status = 'not_initialized' | 'initializing' | 'initialized' | 'logged_in' | 'accounts_created' | 'api_created' | 'full_login'
 export class Web3Auth {
     oAuthClients: OAuthClients;
     network: "Mainnet" | "Preprod";
@@ -64,8 +65,9 @@ export class Web3Auth {
     backupFactorKey: string | null;
     isAccountsCreated: boolean;
     solanaConnection: solanaWeb3.Connection;
-    status: 'not_initialized' | 'initializing' | 'initialized' | 'logged_in' | 'accounts_created' | 'api_created' | 'full_login'
+    status: Status
     moralisKey?: string | null
+    onStatusChange?: (status: Status) => void
 
    // private seedPhrase: string | null;
     private static instance: Web3Auth | null = null;
@@ -111,6 +113,7 @@ export class Web3Auth {
         this.isAccountsCreated = false;
         this.status = "not_initialized"
         this.moralisKey = null
+        this.onStatusChange = ()=>{}
         this.coreKitInstance = new Web3AuthMPCCoreKit(
             {
                 web3AuthClientId: web3AuthClientId,
@@ -156,17 +159,25 @@ export class Web3Auth {
         }
         return Web3Auth.instance;
     }
+
+    private setStatus(status: Status) {
+        this.status = status
+        if (this.onStatusChange) {
+            this.onStatusChange(status);
+        }
+    }
+
     async initialize() {
         if (this.status !== "not_initialized") {
             return this
         } else {
-            this.status = "initializing"
+            this.setStatus("initializing")
         }
         await this.coreKitInstance.init();
         if (this.coreKitInstance.status === "LOGGED_IN") {
-            this.status = "logged_in"
+            this.setStatus("logged_in")
         } else {
-            this.status = "initialized"
+            this.setStatus("initialized")
         }
         return this;
     }
@@ -206,7 +217,7 @@ export class Web3Auth {
             await this.coreKitInstance.loginWithOauth(verifierConfig);
             const coreKitStatus = this.coreKitInstance.status
             if (coreKitStatus === "LOGGED_IN") {
-                this.status = "logged_in"
+                this.setStatus("logged_in")
             }
             localStorage.setItem("walletName", "web3auth");
             localStorage.setItem("blockchain", "cardano");
@@ -243,9 +254,9 @@ export class Web3Auth {
             privateData.seedPhrase = mnemonic
             this.isAccountsCreated = true;
             if (this.status === "api_created") {
-                this.status = "full_login"
+                this.setStatus("full_login")
             } else {
-                this.status = "accounts_created"
+                this.setStatus("accounts_created")
             }
             return { cardanoAddress: address, cardanoStakeAddress: stakeAddr, cardanoPaymentKey: paymentKey, cardanoStakeKey: stakeKey, mnemonic, ethProvider: provider, solanaKeyPair }
         } else {
@@ -269,9 +280,9 @@ export class Web3Auth {
         const api = new Web3AuthWalletAPI(privateData.cardanoPaymentKey!, privateData.cardanoStakeKey!, this.network, this.blockfrostUrl, this.blockfrostKey, emulator)
         this.cardanoWalletAPI = api;
         if (this.status === "accounts_created") {
-            this.status = "full_login"
+            this.setStatus("full_login")
         } else {
-            this.status = "api_created"
+            this.setStatus("api_created")
         }
         return api
     }
@@ -370,7 +381,7 @@ export class Web3Auth {
             throw new Error("coreKitInstance not found");
         }
         await this.coreKitInstance.logout();
-        this.status = "initialized"
+        this.setStatus("initialized")
         privateData.ethProvider = null
         privateData.seedPhrase = null
         privateData.cardanoPaymentKey = null
