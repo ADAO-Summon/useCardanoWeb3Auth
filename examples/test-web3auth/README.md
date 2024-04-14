@@ -6,9 +6,10 @@ A React + Vite template powered by shadcn/ui.
 
 ## 🎉 Install dependencies
 
-Run ```bash
-      pnpm install
-   ```
+Run 
+```bash
+   pnpm install
+```
 
 ## Configure environment
 
