@@ -70,13 +70,14 @@ export const Web3AuthProvider = ({
   }, [web3Auth]);
 
   useEffect(() => {
+    console.log(web3Auth?.status, "web3auth status")
     if (web3Auth && web3Auth.status === "not_initialized") {
       initializeWeb3Auth().then(() => {
         console.log({ web3Auth });
         setIsLoading(false);
       });
     }
-  }, [web3Auth]);
+  }, [web3Auth?.status]);
 
   return (
     <Web3AuthContext.Provider value={{ web3Auth, isLoading }}>
