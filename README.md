@@ -60,10 +60,10 @@ import { Web3AuthProvider } from 'use-cardano-web3-auth';
 import { useWeb3Auth } from 'use-cardano-web3-auth';
 
 const YourComponent = () => {
-    const { login: web3AuthLogin } = useWeb3Auth();
+    const { web3Auth } = useWeb3Auth();
 
     const handleLogin = async () => {
-        await web3AuthLogin("google");
+        await web3Auth?.login("google");
     }
 
     return (
@@ -78,7 +78,7 @@ const YourComponent = () => {
 import { useWeb3Auth } from 'use-cardano-web3-auth';
 
 const YourComponent = () => {
-    const { web3AuthAPI } = useWeb3Auth();
+    const { web3Auth } = useWeb3Auth();
 
     const handleSignMessage = async () => {
         const message = "Hello World!";
@@ -88,7 +88,7 @@ const YourComponent = () => {
             hexMessage += message.charCodeAt(i).toString(16);
         }
 
-        const signature = await web3AuthAPI!.signData((await web3AuthAPI?.getRewardAddresses())![0],  hexMessage);
+        const signature = await web3AuthAPI!.signData((await web3Auth?.cardanoWalletAPI?.getRewardAddresses())![0],  hexMessage);
         console.log({ signature });
     }
 

@@ -32,7 +32,7 @@ export default {
       declaration: true,
       declarationDir: "dist",
       noEmit: true,
-      exclude: ["node_modules/**", "dist/**", "cypress/**"],
+      exclude: ["node_modules/**", "dist/**", "cypress/**", "examples/**"],
     }),
     json()
   ],
