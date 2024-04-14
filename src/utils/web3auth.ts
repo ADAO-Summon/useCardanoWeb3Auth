@@ -208,7 +208,7 @@ export class Web3Auth {
             if (platform === "github" || platform === "twitter") {
                 verifierConfig.subVerifierDetails.jwtParams = {
                     // TO DO: change this to specific auth0 domain
-                    domain: 'https://dev-zru34kf2uvbc4rss.us.auth0.com',
+                    domain: this.oAuthClients[platform].auth0Domain,
                     connection: platform,
                     verifierIdField: 'sub',
                     //scope: 'read:current_user openid profile email',
