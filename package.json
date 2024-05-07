@@ -1,6 +1,6 @@
 {
   "name": "use-cardano-web3-auth",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A React hook for Cardano Web3 authentication.",
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -16,7 +16,8 @@
     "build": "rollup -c",
     "prepare": "npm run build",
     "prepublishOnly": "npm test && npm run build",
-    "cypress:open": "cypress open"
+    "cypress:open": "cypress open",
+    "test": "cypress run"
   },
   "keywords": [
     "react",
