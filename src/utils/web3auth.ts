@@ -34,7 +34,7 @@ export const getChainConfig = (network: "Mainnet" | "Preprod") => {
         {
             chainNamespace: "eip155" as any,
             chainId: "0x13881", // hex of 80001, polygon testnet
-            rpcTarget: "https://polygon-mumbai-pokt.nodies.app", //"https://rpc.ankr.com/polygon_mumbai",
+            rpcTarget: "https://polygon-testnet.public.blastapi.io",// "https://polygon-mumbai-pokt.nodies.app", //"https://rpc.ankr.com/polygon_mumbai",
             // Avoid using public rpcTarget in production.
             // Use services like Infura, Quicknode etc
             displayName: "Polygon MATIC Testnet",
